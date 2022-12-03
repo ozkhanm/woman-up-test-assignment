@@ -1,3 +1,8 @@
+/**
+ * 
+ * @param {Object} props
+ * @param {String} props.attachment
+ */
 const AttachmentItem = ({ attachment }) => {
   return (
     <li>
@@ -6,6 +11,17 @@ const AttachmentItem = ({ attachment }) => {
   );
 };
 
+/**
+ * 
+ * @param {Object} props 
+ * @param {String} props.id
+ * @param {String} props.description
+ * @param {{
+ *  seconds: Number
+ *  nanoseconds: Number
+ * }} props.endDate
+ * @param {Array<String>} props.attachments
+ */
 const AdditionalInfoBlock = ({ id, description, endDate, attachments }) => {
   return (
     <div className="list__additional-info-container">
