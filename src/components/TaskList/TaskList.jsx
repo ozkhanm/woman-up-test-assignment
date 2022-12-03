@@ -12,6 +12,7 @@ import Task from "../Task/Task";
  * nanoseconds: Number
  * }
  * attachments: Array<String>
+ * isFinished: Boolean
  * }>} props.tasks
  */
 const TaskList = ({ tasks }) => {

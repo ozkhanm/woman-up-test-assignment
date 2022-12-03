@@ -14,14 +14,15 @@ import { useState } from "react";
  *    nanoseconds: Number
  *  }
  *  attachments: Array<String>
+ *  isFinished: Boolean
  * }} props.task
  */
-const Task = ({task: { id, title, description, endDate, attachments }}) => {
+const Task = ({task: { id, title, description, endDate, attachments, isFinished }}) => {
   const [isAdditionalInfoShown, setIsAdditionalInfoShown] = useState(false);
 
   return (
     <li key={id} className="list__item">
-      <MainInfoBlock id={id} title={title} isAdditionalInfoShown={isAdditionalInfoShown} setIsAdditionalInfoShown={setIsAdditionalInfoShown}/>
+      <MainInfoBlock id={id} title={title} isFinished={isFinished} isAdditionalInfoShown={isAdditionalInfoShown} setIsAdditionalInfoShown={setIsAdditionalInfoShown}/>
       <AdditionalInfoBlock id={id} description={description} endDate={endDate} attachments={attachments} isAdditionalInfoShown={isAdditionalInfoShown} />
     </li>
   );
