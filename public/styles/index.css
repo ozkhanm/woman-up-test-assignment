@@ -131,6 +131,9 @@ body {
   background-position: 50%;
   background-repeat: no-repeat;
 }
+.list__expand-button--active {
+  transform: rotate(-90deg);
+}
 .list__additional-info-container {
   padding-top: 10px;
 }

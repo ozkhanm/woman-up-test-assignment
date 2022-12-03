@@ -21,9 +21,10 @@ const AttachmentItem = ({ attachment }) => {
  *  nanoseconds: Number
  * }} props.endDate
  * @param {Array<String>} props.attachments
+ * @param {Boolean} props.isAdditionalInfoShown
  */
-const AdditionalInfoBlock = ({ id, description, endDate, attachments }) => {
-  return (
+const AdditionalInfoBlock = ({ id, description, endDate, attachments, isAdditionalInfoShown }) => {
+  return isAdditionalInfoShown ? (
     <div className="list__additional-info-container">
       <p className="list__additional-info-description">{ description }</p>
       <p className="list__additional-info-timestamp">{ endDate.seconds }</p>
@@ -34,7 +35,7 @@ const AdditionalInfoBlock = ({ id, description, endDate, attachments }) => {
         </ul>
       </div>
     </div>
-  );
+  ) : null;
 };
 
 export default AdditionalInfoBlock;
