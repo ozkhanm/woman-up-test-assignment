@@ -1,21 +1,18 @@
+import { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+
 import Task from "../Task/Task";
 
-/**
- * 
- * @param {Object} props 
- * @param {Array<{
- * id: String
- * description: String
- * title: String
- * endDate: {
- * seconds: Number
- * nanoseconds: Number
- * }
- * attachments: Array<String>
- * isFinished: Boolean
- * }>} props.tasks
- */
-const TaskList = ({ tasks }) => {
+import { fetchTasks } from "../../store/reducers/ActionCreator";
+
+const TaskList = () => {
+  const dispatch = useDispatch();
+  const { tasks } = useSelector(state => state.taskReducer);
+
+  useEffect(() => {
+    dispatch(fetchTasks());
+  }, []);
+
   return (
     <ul className="list">
       { tasks.map(task => <Task key={task.id} task={task} />) }

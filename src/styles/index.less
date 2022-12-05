@@ -10,7 +10,7 @@ body {
 .container {
   display: flex;
   flex-direction: column;
-  width: 50%;
+  width: 70%;
   margin: 0 auto;
   margin-top: 40px;
 }
@@ -35,6 +35,7 @@ body {
     border-radius: 3px;
     border: 0;
     outline: 0;
+    box-sizing: border-box;
   }
 
   &__submit-button {
@@ -120,6 +121,10 @@ body {
         margin-right: 0;
       }
     }
+
+    &--edit {
+      padding-left: 0;
+    }
   }
 
   &__item-label {
@@ -129,8 +134,13 @@ body {
     width: 100%;
 
     font-size: 28px;
+    word-break: break-all;
 
     cursor: pointer;
+
+    &--expired {
+      color: #f04a4a;
+    }
   }
 
   &__task-buttons-container {

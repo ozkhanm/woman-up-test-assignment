@@ -1,6 +1,8 @@
+import { useSelector } from "react-redux";
+
 import MainInfoBlock from "../MainInfoBlock/MainInfoBlock";
 import AdditionalInfoBlock from "../AdditionalInfoBlock/AdditionalInfoBlock";
-import { useState } from "react";
+import TaskForm from "../TaskForm/TaskForm";
 
 /**
  * 
@@ -9,21 +11,45 @@ import { useState } from "react";
  *  id: String
  *  title: String
  *  description: String
- *  endDate: {
- *    seconds: Number
- *    nanoseconds: Number
- *  }
+ *  endDate: Number
  *  attachments: Array<String>
  *  isFinished: Boolean
  * }} props.task
  */
 const Task = ({task: { id, title, description, endDate, attachments, isFinished }}) => {
-  const [isAdditionalInfoShown, setIsAdditionalInfoShown] = useState(false);
+  const { editTaskId } = useSelector(state => state.taskReducer);
+  const listItemEditClassname = id === editTaskId ? "list__item--edit" : "";
 
   return (
-    <li key={id} className="list__item">
-      <MainInfoBlock id={id} title={title} isFinished={isFinished} isAdditionalInfoShown={isAdditionalInfoShown} setIsAdditionalInfoShown={setIsAdditionalInfoShown}/>
-      <AdditionalInfoBlock id={id} description={description} endDate={endDate} attachments={attachments} isAdditionalInfoShown={isAdditionalInfoShown} />
+    <li key={id} className={`list__item ${listItemEditClassname}`}>
+      {
+        id !== editTaskId ?
+        <>
+          <MainInfoBlock 
+            id={id}
+            title={title}
+            description={description}
+            endDate={endDate}
+            attachments={attachments}
+            isFinished={isFinished}
+          />
+          <AdditionalInfoBlock
+            id={id}
+            description={description}
+            endDate={endDate}
+            attachments={attachments}
+          />
+        </>
+        :
+        <TaskForm
+          title={title}
+          id={id}
+          description={description}
+          endDate={endDate}
+          attachments={attachments}
+          isFinished={isFinished}
+        />
+      }
     </li>
   );
 };

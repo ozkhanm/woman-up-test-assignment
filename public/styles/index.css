@@ -7,7 +7,7 @@ body {
 .container {
   display: flex;
   flex-direction: column;
-  width: 50%;
+  width: 70%;
   margin: 0 auto;
   margin-top: 40px;
 }
@@ -28,6 +28,7 @@ body {
   border-radius: 3px;
   border: 0;
   outline: 0;
+  box-sizing: border-box;
 }
 .form__submit-button {
   min-height: 40px;
@@ -93,12 +94,19 @@ body {
 .list__item .button:last-child {
   margin-right: 0;
 }
+.list__item--edit {
+  padding-left: 0;
+}
 .list__item-label {
   position: relative;
   margin-right: 15px;
   width: 100%;
   font-size: 28px;
+  word-break: break-all;
   cursor: pointer;
+}
+.list__item-label--expired {
+  color: #f04a4a;
 }
 .list__task-buttons-container {
   display: flex;
