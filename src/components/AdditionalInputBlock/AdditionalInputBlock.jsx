@@ -1,3 +1,4 @@
+import { useSelector } from "react-redux";
 import dayjs from "dayjs";
 
 import { TASK_FIELDS } from "../../constants";
@@ -18,8 +19,9 @@ import { TASK_FIELDS } from "../../constants";
  * @param {Task} props.taskData
  * @param {Function} props.inputChangeHandler
  */
-const AdditionalInputBlock = ({ taskData, inputChangeHandler }) => {
+const AdditionalInputBlock = ({ taskData, localUrls, inputChangeHandler }) => {
   const { description, endDate, attachments } = taskData;
+  const { editTaskId } = useSelector(state => state.taskReducer);
   const date = dayjs(endDate).format("YYYY-MM-DD");
 
   return (
@@ -44,6 +46,17 @@ const AdditionalInputBlock = ({ taskData, inputChangeHandler }) => {
           onChange={e => inputChangeHandler(e, TASK_FIELDS.ATTACHMENTS)}
         />
       </label>
+      <ul className="list__additional-info-attachments-list">
+        { localUrls.map((it, index) => {
+            return (
+              <li key={index} className="attachment-item">
+                <img className="attachment-item__image" src={it} alt="Attachment" />
+                <button className="attachment-item__button" type="button">x</button>
+              </li>
+            );
+          })
+        }   
+      </ul>
     </div>
   );
 };

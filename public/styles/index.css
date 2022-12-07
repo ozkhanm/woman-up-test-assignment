@@ -155,13 +155,16 @@ body {
   margin: 0;
   margin-bottom: 10px;
 }
-.list__additional-info-attachements-header {
+.list__additional-info-attachments-header {
   margin: 0;
+  margin-bottom: 10px;
   font-size: 18px;
   font-weight: 400;
 }
 .list__additional-info-attachments-list {
   padding: 0;
+  margin: 0;
+  margin-top: 10px;
   list-style: none;
 }
 .list__task-controls-container {
@@ -182,6 +185,32 @@ body {
 }
 .button {
   border-radius: 5px;
+  border: 0;
+  cursor: pointer;
+}
+.attachment-item {
+  position: relative;
+  display: inline-block;
+  margin-right: 15px;
+}
+.attachment-item:last-child {
+  margin-right: 0;
+}
+.attachment-item__image {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+}
+.attachment-item__button {
+  position: absolute;
+  right: 0;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  font-size: 16px;
+  line-height: 16px;
+  background: 0;
+  background-color: rgba(255, 255, 255, 0.5);
   border: 0;
   cursor: pointer;
 }

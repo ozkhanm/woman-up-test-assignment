@@ -34,11 +34,12 @@ const TaskForm = () => {
   const dispatch = useDispatch();
   const { newTask, editingTask, editTaskId } = useSelector(state => state.taskReducer);
   const { editExistingTask, setEditTaskId, changeNewTask, changeExistingTask, clearExistingTask } = taskSlice.actions;
-  // const taskData = editTaskId !== -1 ? editingTask : newTask;
 
   const [taskData, setTaskData] = useState(() => {
     return editTaskId !== -1 ? editingTask : newTask;
   });
+
+  const [localUrls, setLocalUrls] = useState([]);
 
   /**
    * @param {SubmitEvent} e 
@@ -93,7 +94,13 @@ const TaskForm = () => {
    * @param {String} field 
    */
   const inputChangeHandler = (e, field) => {
-    const value = e.target.value;
+    const value = field !== TASK_FIELDS.ATTACHMENTS ? e.target.value : e.target.files;
+
+    if (field === TASK_FIELDS.ATTACHMENTS) {
+      const localUrls = Array.from(value).map(it => URL.createObjectURL(it));
+
+      setLocalUrls(localUrls);
+    }
 
     if (editTaskId === -1) {
       inputChangeController(changeNewTask, field, value);
@@ -105,7 +112,7 @@ const TaskForm = () => {
   return (
     <form className="form" onSubmit={formSubmitButtonClickHandler}>
       <MainInputBlock taskData={taskData} inputChangeHandler={inputChangeHandler} />
-      <AdditionalInputBlock taskData={taskData} inputChangeHandler={inputChangeHandler} />
+      <AdditionalInputBlock taskData={taskData} inputChangeHandler={inputChangeHandler} localUrls={localUrls} />
     </form>
   );
 };

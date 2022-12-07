@@ -32,7 +32,7 @@ const AdditionalInfoBlock = ({task: { id, description, endDate, attachments }}) 
       <p className="list__additional-info-description">{ description }</p>
       <p className="list__additional-info-timestamp">{ date }</p>
       <div className="list__additional-info-attachments">
-        <h2 className="list__additional-info-attachements-header">Attached files:</h2>
+        <h2 className="list__additional-info-attachments-header">Attached files:</h2>
         <ul className="list__additional-info-attachments-list">
           { attachments.map((attachment, index) => <AttachmentItem key={`attachment-${index}-${id}`} attachment={attachment} />) }
         </ul>
