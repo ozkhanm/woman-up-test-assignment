@@ -92,11 +92,11 @@ const TaskForm = () => {
         });
 
         dispatch(action({...taskData, ...{
-          [field]: [...taskData[field], ...attachmentRefs],
+          [field]: [...attachmentRefs],
         }}));
 
         setTaskData({...taskData, ...{
-          [field]: [...taskData[field], ...attachmentRefs],
+          [field]: [...attachmentRefs],
         }});
         break;
 
@@ -130,10 +130,41 @@ const TaskForm = () => {
     }
   };
 
+  const removeImageButtonClickHandler = id => {
+    Promise.resolve()
+      .then(() => {
+        setLocalUrls(prevState => {
+          const oldUrls = prevState.slice();
+    
+          oldUrls.splice(id, 1);
+          
+          return oldUrls;
+        });
+      })
+      .then(() => {
+        const data = { ...taskData };
+
+        data.attachments.splice(id, 1);
+        setTaskData(data);
+
+        return data;
+      })
+      .then(data => {
+        const attachments = data.attachments.map(it => it.upload);
+
+        inputChangeController(changeExistingTask, TASK_FIELDS.ATTACHMENTS, attachments);
+      });
+  };
+
   return (
     <form className="form" onSubmit={formSubmitButtonClickHandler}>
       <MainInputBlock taskData={taskData} inputChangeHandler={inputChangeHandler} />
-      <AdditionalInputBlock taskData={taskData} inputChangeHandler={inputChangeHandler} localUrls={localUrls} />
+      <AdditionalInputBlock
+        taskData={taskData}
+        localUrls={localUrls}
+        inputChangeHandler={inputChangeHandler}
+        removeImageButtonClickHandler={removeImageButtonClickHandler}
+      />
     </form>
   );
 };

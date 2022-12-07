@@ -2,6 +2,7 @@ import { useSelector } from "react-redux";
 import dayjs from "dayjs";
 
 import { TASK_FIELDS } from "../../constants";
+import { getRandomId } from "../../utils";
 
 /**
  * @typedef {{
@@ -19,7 +20,7 @@ import { TASK_FIELDS } from "../../constants";
  * @param {Task} props.taskData
  * @param {Function} props.inputChangeHandler
  */
-const AdditionalInputBlock = ({ taskData, localUrls, inputChangeHandler }) => {
+const AdditionalInputBlock = ({ taskData, localUrls, inputChangeHandler, removeImageButtonClickHandler }) => {
   const { description, endDate, attachments } = taskData;
   const { editTaskId } = useSelector(state => state.taskReducer);
   const date = dayjs(endDate).format("YYYY-MM-DD");
@@ -50,10 +51,11 @@ const AdditionalInputBlock = ({ taskData, localUrls, inputChangeHandler }) => {
       <ul className="list__additional-info-attachments-list">
         { 
           localUrls.map((it, index) => {
+            const randomId = getRandomId();
             return (
-              <li key={index} className="attachment-item">
+              <li key={randomId} className="attachment-item">
                 <img className="attachment-item__image" src={it} alt="Attachment" />
-                <button className="attachment-item__button" type="button">x</button>
+                <button className="attachment-item__button" type="button" onClick={() => removeImageButtonClickHandler(index)}>x</button>
               </li>
             );
           })
