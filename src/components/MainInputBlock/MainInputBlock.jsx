@@ -40,9 +40,7 @@ const MainInputBlock = ({ taskData, inputChangeHandler }) => {
         required
       />
       <button className="form__submit-button button" type="submit">Submit</button>
-      { editTaskId !== -1 ? 
-          <button className="form__submit-button button" onClick={cancelButtonClickHandler}>Cancel</button> : null
-      }
+      { editTaskId !== -1 ? <button className="form__submit-button button" onClick={cancelButtonClickHandler}>Cancel</button> : null }
     </div>
   );
 };

@@ -34,7 +34,11 @@ const TaskForm = () => {
   const dispatch = useDispatch();
   const { newTask, editingTask, editTaskId } = useSelector(state => state.taskReducer);
   const { editExistingTask, setEditTaskId, changeNewTask, changeExistingTask, clearExistingTask } = taskSlice.actions;
-  const taskData = editTaskId !== -1 ? editingTask : newTask;
+  // const taskData = editTaskId !== -1 ? editingTask : newTask;
+
+  const [taskData, setTaskData] = useState(() => {
+    return editTaskId !== -1 ? editingTask : newTask;
+  });
 
   /**
    * @param {SubmitEvent} e 
@@ -44,6 +48,13 @@ const TaskForm = () => {
 
     if (editTaskId === -1) {
       dispatch(processAddNewTask(taskData));
+      setTaskData({
+        title: "",
+        description: "",
+        endDate: Date.now(),
+        attachments: [],
+        isFinished: false,
+      });
     } else {
       updateTask(editTaskId, taskData);
       dispatch(editExistingTask({ id: editTaskId, taskData }));
@@ -58,6 +69,9 @@ const TaskForm = () => {
         dispatch(action({...taskData, ...{
           [field]: dayjs(value).valueOf(),
         }}));
+        setTaskData({...taskData, ...{
+          [field]: dayjs(value).valueOf(),
+        }});
         break;
 
       case TASK_FIELDS.ATTACHMENTS:
@@ -68,6 +82,9 @@ const TaskForm = () => {
         dispatch(action({...taskData, ...{
           [field]: value,
         }}));
+        setTaskData({...taskData, ...{
+          [field]: value,
+        }});
     }
   };
 
