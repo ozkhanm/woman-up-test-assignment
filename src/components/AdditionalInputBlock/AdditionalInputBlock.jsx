@@ -48,7 +48,8 @@ const AdditionalInputBlock = ({ taskData, localUrls, inputChangeHandler }) => {
         />
       </label>
       <ul className="list__additional-info-attachments-list">
-        { localUrls.map((it, index) => {
+        { 
+          localUrls.map((it, index) => {
             return (
               <li key={index} className="attachment-item">
                 <img className="attachment-item__image" src={it} alt="Attachment" />

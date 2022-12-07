@@ -42,7 +42,9 @@ const TaskForm = () => {
     return editTaskId !== -1 ? editingTask : newTask;
   });
 
-  const [localUrls, setLocalUrls] = useState([]);
+  const [localUrls, setLocalUrls] = useState(() => {
+    return taskData.attachments.map(it => it.url);
+  });
 
   /**
    * @param {SubmitEvent} e 
