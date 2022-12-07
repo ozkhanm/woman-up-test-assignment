@@ -41,7 +41,8 @@ const AdditionalInputBlock = ({ taskData, localUrls, inputChangeHandler }) => {
       <label className="form__file-input-label" htmlFor="main-file-input">
         <input
           className="form__file-input visually-hidden"
-          type="file" id="main-file-input"
+          type="file"
+          id="main-file-input"
           multiple
           onChange={e => inputChangeHandler(e, TASK_FIELDS.ATTACHMENTS)}
         />

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import dayjs from "dayjs";
 
 import AdditionalInputBlock from "../AdditionalInputBlock/AdditionalInputBlock";
@@ -9,6 +10,8 @@ import { updateTask } from "../../api";
 import { processAddNewTask } from "../../store/reducers/ActionCreator";
 import { taskSlice } from "../../store/reducers/TaskSlice";
 import { TASK_FIELDS } from "../../constants";
+import { storage } from "../../firebase-config";
+import { getRandomId } from "../../utils";
 
 /**
  * @typedef {{
@@ -76,7 +79,23 @@ const TaskForm = () => {
         break;
 
       case TASK_FIELDS.ATTACHMENTS:
-        // TODO
+        const attachmentRefs = [];
+        
+        Array.from(value).forEach(it => {
+          attachmentRefs.push({
+            ref: ref(storage, `${it.name}-${getRandomId()}`),
+            upload: it,
+            url: URL.createObjectURL(it),
+          });
+        });
+
+        dispatch(action({...taskData, ...{
+          [field]: [...taskData[field], ...attachmentRefs],
+        }}));
+
+        setTaskData({...taskData, ...{
+          [field]: [...taskData[field], ...attachmentRefs],
+        }});
         break;
 
       default:
