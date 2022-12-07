@@ -30,24 +30,17 @@ import { TASK_FIELDS } from "../../constants";
  * @param {Array<String>} props.attachments
  * @param {Boolean} props.isFinished
  */
-const TaskForm = ({ title, id, description, endDate, attachments, isFinished }) => {
+const TaskForm = () => {
   const dispatch = useDispatch();
-  const { newTask, editTaskId } = useSelector(state => state.taskReducer);
+  const { newTask, editingTask, editTaskId } = useSelector(state => state.taskReducer);
   const { editExistingTask, setEditTaskId, changeNewTask, changeExistingTask, clearExistingTask } = taskSlice.actions;
   const [taskData, setTaskData] = useState(
     /**
      * Initialize task data
      * @returns {Task}
      */
-    () => {
-    return id === editTaskId ? {
-      title,
-      description,
-      endDate,
-      attachments,
-      isFinished,
-    } : newTask;
-  });
+   () => editTaskId !== -1 ? editingTask : newTask
+  );
 
   /**
    * @param {SubmitEvent} e 
@@ -55,7 +48,7 @@ const TaskForm = ({ title, id, description, endDate, attachments, isFinished }) 
   const formSubmitButtonClickHandler = e => {
     e.preventDefault();
 
-    if (id !== editTaskId) {
+    if (editTaskId === -1) {
       dispatch(processAddNewTask(taskData));
       setTaskData({
         title: "",
@@ -104,7 +97,7 @@ const TaskForm = ({ title, id, description, endDate, attachments, isFinished }) 
   const inputChangeHandler = (e, field) => {
     const value = e.target.value;
 
-    if (id !== editTaskId) {
+    if (editTaskId === -1) {
       inputChangeController(changeNewTask, field, value);
     } else {
       inputChangeController(changeExistingTask, field, value);
@@ -113,7 +106,7 @@ const TaskForm = ({ title, id, description, endDate, attachments, isFinished }) 
 
   return (
     <form className="form" onSubmit={formSubmitButtonClickHandler}>
-      <MainInputBlock taskData={taskData} id={id} inputChangeHandler={inputChangeHandler} />
+      <MainInputBlock taskData={taskData} inputChangeHandler={inputChangeHandler} />
       <AdditionalInputBlock taskData={taskData} inputChangeHandler={inputChangeHandler} />
     </form>
   );

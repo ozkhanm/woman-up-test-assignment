@@ -16,42 +16,35 @@ import TaskForm from "../TaskForm/TaskForm";
  *  isFinished: Boolean
  * }} props.task
  */
-const Task = ({task: { id, title, description, endDate, attachments, isFinished }}) => {
+const Task = ({ task }) => {
   const { editTaskId } = useSelector(state => state.taskReducer);
-  const listItemEditClassname = id === editTaskId ? "list__item--edit" : "";
+  const listItemEditClassname = editTaskId === task.id ? "list__item--edit" : "";
 
   return (
-    <li key={id} className={`list__item ${listItemEditClassname}`}>
+    <li key={task.id} className={`list__item ${listItemEditClassname}`}>
       {
-        id !== editTaskId ?
+        editTaskId !== task.id ?
         <>
-          <MainInfoBlock 
-            id={id}
-            title={title}
-            description={description}
-            endDate={endDate}
-            attachments={attachments}
-            isFinished={isFinished}
-          />
-          <AdditionalInfoBlock
-            id={id}
-            description={description}
-            endDate={endDate}
-            attachments={attachments}
-          />
+          <MainInfoBlock task={task} />
+          <AdditionalInfoBlock task={task} />
         </>
         :
-        <TaskForm
-          title={title}
-          id={id}
-          description={description}
-          endDate={endDate}
-          attachments={attachments}
-          isFinished={isFinished}
-        />
+        <TaskForm task={task} />
       }
     </li>
   );
 };
 
 export default Task;
+
+// prob here state
+  /*
+  Работа с новой таской
+  1) Обновляем newTask в сторе
+  2) При выборе прикрепляемых файлов отображаем их в списке (localUrl храним в стейте)
+  3) В сторе нужно хранить ref, upload, globalUrl
+
+  Работа с уже существующей таской
+  1) Обновляем editingTask
+  2)
+  */

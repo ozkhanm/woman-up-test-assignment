@@ -22,9 +22,9 @@ const AttachmentItem = ({ attachment }) => {
  * @param {Number} props.endDate
  * @param {Array<String>} props.attachments
  */
-const AdditionalInfoBlock = ({ id, description, endDate, attachments }) => {
+const AdditionalInfoBlock = ({task: { id, description, endDate, attachments }}) => {
   const { additionalInfoShowTaskId } = useSelector(state => state.taskReducer);
-  const {$D, $M, $y} = dayjs(endDate);
+  const { $D, $M, $y } = dayjs(endDate);
   const date = `${$D}.${$M + 1}.${$y}`;
 
   return additionalInfoShowTaskId === id ? (

@@ -19,7 +19,7 @@ import { TASK_FIELDS } from "../../constants";
  * @param {String} props.id
  * @param {Function} props.inputChangeHandler
  */
-const MainInputBlock = ({ taskData, id, inputChangeHandler }) => {
+const MainInputBlock = ({ taskData, inputChangeHandler }) => {
   const { title } = taskData;
   const { editTaskId } = useSelector(state => state.taskReducer);
   const dispatch = useDispatch();
@@ -40,11 +40,8 @@ const MainInputBlock = ({ taskData, id, inputChangeHandler }) => {
         required
       />
       <button className="form__submit-button button" type="submit">Submit</button>
-      { editTaskId === id ? 
-          <button className="form__submit-button button" onClick={cancelButtonClickHandler}>
-            Cancel
-          </button> : 
-          null
+      { editTaskId !== -1 ? 
+          <button className="form__submit-button button" onClick={cancelButtonClickHandler}>Cancel</button> : null
       }
     </div>
   );

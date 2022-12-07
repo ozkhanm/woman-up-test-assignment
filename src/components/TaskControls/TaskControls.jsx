@@ -10,8 +10,8 @@ import { deleteTask } from "../../api";
  */
 const TaskControls = ({ taskId }) => {
   const dispatch = useDispatch();
-  const { additionalInfoShowTaskId } = useSelector(state => state.taskReducer);
-  const { setEditTaskId, removeTask, setAdditionalInfoShowTaskId } = taskSlice.actions;
+  const { tasks, additionalInfoShowTaskId } = useSelector(state => state.taskReducer);
+  const { setEditTaskId, removeTask, setAdditionalInfoShowTaskId, changeExistingTask } = taskSlice.actions;
   const expandButtonActiveClass = additionalInfoShowTaskId === taskId ? "list__expand-button--active" : "";
 
   const deleteButtonClickHandler = () => {
@@ -29,6 +29,7 @@ const TaskControls = ({ taskId }) => {
 
   const editButtonClickHandler = () => {
     dispatch(setEditTaskId(taskId));
+    dispatch(changeExistingTask(tasks.find(it => it.id === taskId)));
   };
 
   return (

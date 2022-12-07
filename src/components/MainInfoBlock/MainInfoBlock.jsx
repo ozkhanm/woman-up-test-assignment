@@ -15,12 +15,13 @@ import { changeIsFinishedTaskStatus } from "../../store/reducers/ActionCreator";
  * @param {Array<String>} props.attachments
  * @param {Boolean} props.isFinished
  */
-const MainInfoBlock = ({ id, title, description, endDate, attachments, isFinished }) => {
+const MainInfoBlock = ({task: { id, title, description, endDate, attachments, isFinished }}) => {
   const dispatch = useDispatch();
   const checkboxRef = useRef();
 
   const checkboxChangeHandler = () => {
     const checkedStatus = checkboxRef.current.checked;
+    
     dispatch(changeIsFinishedTaskStatus(id, {
       title,
       description,
