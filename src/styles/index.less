@@ -25,6 +25,8 @@ body {
 }
 
 .form {
+  position: relative;
+
   margin-bottom: 10px;
 
   &__title-input {
@@ -287,4 +289,26 @@ body {
 
     cursor: pointer;
   }
+}
+
+.message {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 1;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  width: 50%;
+  height: 50%;
+  
+  text-align: center;  
+  font-weight: 800;
+  color: #000;
+
+  background-color: #cecece;
+
+  translate: -50% -50%;
 }

@@ -25,9 +25,12 @@ const TaskForm = ({ files, setFiles }) => {
 
   const [taskData, setTaskData] = useState(() => editTaskId !== -1 ? editingTask : newTask);
   const [localUrls, setLocalUrls] = useState(() => editTaskId === -1 ? taskData.attachments.map(it => it.url) : taskData.attachments);
+  const [isDataFetching, setIsDataFetching] = useState(false);
 
   const formSubmitButtonClickHandler = e => {
     e.preventDefault();
+
+    setIsDataFetching(true);
 
     const taskDataSlice = { ...taskData };
     const urlsPromises = [];
@@ -80,6 +83,9 @@ const TaskForm = ({ files, setFiles }) => {
             }
 
             setLocalUrls([]);
+          })
+          .then(() => {
+            setIsDataFetching(false);
           });
       });
   };
@@ -211,7 +217,8 @@ const TaskForm = ({ files, setFiles }) => {
 
   return (
     <form className="form" onSubmit={formSubmitButtonClickHandler}>
-      <MainInputBlock taskData={taskData} inputChangeHandler={inputChangeHandler} />
+      { isDataFetching ? <p className="message">Data fetching</p> : null }
+      <MainInputBlock taskData={taskData} isDataFetching={isDataFetching} inputChangeHandler={inputChangeHandler} />
       <AdditionalInputBlock
         taskData={taskData}
         localUrls={localUrls}
@@ -224,3 +231,4 @@ const TaskForm = ({ files, setFiles }) => {
 };
 
 export default TaskForm;
+

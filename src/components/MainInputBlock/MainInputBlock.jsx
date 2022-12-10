@@ -16,10 +16,10 @@ import { TASK_FIELDS } from "../../constants";
 /**
  * @param {Object} props 
  * @param {Task} props.taskData
- * @param {String} props.id
+ * @param {Boolean} props.isDataFetching
  * @param {Function} props.inputChangeHandler
  */
-const MainInputBlock = ({ taskData, inputChangeHandler }) => {
+const MainInputBlock = ({ taskData, isDataFetching, inputChangeHandler }) => {
   const { title } = taskData;
   const { editTaskId } = useSelector(state => state.taskReducer);
   const dispatch = useDispatch();
@@ -39,7 +39,11 @@ const MainInputBlock = ({ taskData, inputChangeHandler }) => {
         onChange={e => inputChangeHandler(e, TASK_FIELDS.TITLE)}
         required
       />
-      <button className="form__submit-button button" type="submit">Submit</button>
+      <button
+        className="form__submit-button button"
+        type="submit"
+        disabled={isDataFetching ? true : false}
+      >Submit</button>
       { 
         editTaskId !== -1 ? 
           <button className="form__submit-button button" onClick={cancelButtonClickHandler}>
