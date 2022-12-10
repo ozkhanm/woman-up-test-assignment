@@ -5,7 +5,6 @@ import AdditionalInfoBlock from "../AdditionalInfoBlock/AdditionalInfoBlock";
 import TaskForm from "../TaskForm/TaskForm";
 
 /**
- * 
  * @param {Object} props 
  * @param {{
  *  id: String
@@ -15,40 +14,23 @@ import TaskForm from "../TaskForm/TaskForm";
  *  attachments: Array<String>
  *  isFinished: Boolean
  * }} props.task
+ * @param {File[]} props.files
+ * @param {Function} props.setFiles
  */
-const Task = ({task: { id, title, description, endDate, attachments, isFinished }}) => {
+const Task = ({ task, files, setFiles }) => {
   const { editTaskId } = useSelector(state => state.taskReducer);
-  const listItemEditClassname = id === editTaskId ? "list__item--edit" : "";
+  const listItemEditClassname = editTaskId === task.id ? "list__item--edit" : "";
 
   return (
-    <li key={id} className={`list__item ${listItemEditClassname}`}>
+    <li key={task.id} className={`list__item ${listItemEditClassname}`}>
       {
-        id !== editTaskId ?
+        editTaskId !== task.id ?
         <>
-          <MainInfoBlock 
-            id={id}
-            title={title}
-            description={description}
-            endDate={endDate}
-            attachments={attachments}
-            isFinished={isFinished}
-          />
-          <AdditionalInfoBlock
-            id={id}
-            description={description}
-            endDate={endDate}
-            attachments={attachments}
-          />
+          <MainInfoBlock task={task} setFiles={setFiles} />
+          <AdditionalInfoBlock task={task} />
         </>
         :
-        <TaskForm
-          title={title}
-          id={id}
-          description={description}
-          endDate={endDate}
-          attachments={attachments}
-          isFinished={isFinished}
-        />
+        <TaskForm task={task} files={files} setFiles={setFiles} />
       }
     </li>
   );

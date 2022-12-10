@@ -6,6 +6,8 @@ export const ERROR_MESSAGES = {
 
 export const DOCUMENT_PATH = "tasks";
 
+export const ID_LENGTH = 20;
+
 export const TASK_FIELDS = {
   TITLE: "title",
   DESCRIPTION: "description",

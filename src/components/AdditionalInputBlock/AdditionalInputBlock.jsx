@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 
 import { TASK_FIELDS } from "../../constants";
+import { getRandomId } from "../../utils";
 
 /**
  * @typedef {{
@@ -13,13 +14,14 @@ import { TASK_FIELDS } from "../../constants";
  */
 
 /**
- * 
  * @param {Object} props
  * @param {Task} props.taskData
+ * @param {String[]} props.localUrls
  * @param {Function} props.inputChangeHandler
+ * @param {Function} props.removeImageButtonClickHandler
  */
-const AdditionalInputBlock = ({ taskData, inputChangeHandler }) => {
-  const { description, endDate, attachments } = taskData;
+const AdditionalInputBlock = ({ taskData, localUrls, inputChangeHandler, removeImageButtonClickHandler }) => {
+  const { description, endDate } = taskData;
   const date = dayjs(endDate).format("YYYY-MM-DD");
 
   return (
@@ -39,11 +41,26 @@ const AdditionalInputBlock = ({ taskData, inputChangeHandler }) => {
       <label className="form__file-input-label" htmlFor="main-file-input">
         <input
           className="form__file-input visually-hidden"
-          type="file" id="main-file-input"
+          type="file"
+          id="main-file-input"
           multiple
           onChange={e => inputChangeHandler(e, TASK_FIELDS.ATTACHMENTS)}
         />
       </label>
+      <ul className="list__additional-info-attachments-list">
+        { 
+          localUrls.map((it, index) => {
+            const randomId = getRandomId();
+
+            return (
+              <li key={randomId} className="attachment-item">
+                <img className="attachment-item__image" src={it} alt="Attachment" />
+                <button className="attachment-item__button" type="button" onClick={() => removeImageButtonClickHandler(index)}>x</button>
+              </li>
+            );
+          })
+        }   
+      </ul>
     </div>
   );
 };
