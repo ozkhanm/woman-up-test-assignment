@@ -2,13 +2,14 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { taskSlice } from "../../store/reducers/TaskSlice";
 import { deleteTask } from "../../api";
+import { urlToObject } from "../../utils";
 
 /**
- * 
  * @param {Object} props 
  * @param {String} props.taskId
+ * @param {Function} props.setFiles
  */
-const TaskControls = ({ taskId }) => {
+const TaskControls = ({ taskId, setFiles }) => {
   const dispatch = useDispatch();
   const { tasks, additionalInfoShowTaskId } = useSelector(state => state.taskReducer);
   const { setEditTaskId, removeTask, setAdditionalInfoShowTaskId, changeExistingTask } = taskSlice.actions;
@@ -29,7 +30,29 @@ const TaskControls = ({ taskId }) => {
 
   const editButtonClickHandler = () => {
     dispatch(setEditTaskId(taskId));
-    dispatch(changeExistingTask(tasks.find(it => it.id === taskId)));
+
+    const task = { ...tasks.find(it => it.id === taskId) };
+    const promises = [];
+
+    if (taskId !== -1) {
+      const attachments = [...task.attachments];
+
+      attachments.forEach(it => {
+        promises.push(urlToObject(it));
+      });
+
+      Promise.all(promises)
+        .then(data => {
+          const taskSlice = { ...task };
+
+          taskSlice.attachments = data;
+          setFiles(data);
+        });
+
+      dispatch(changeExistingTask(task));
+    } else {
+      dispatch(changeExistingTask(task));
+    }
   };
 
   return (

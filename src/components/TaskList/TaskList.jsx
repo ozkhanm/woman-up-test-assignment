@@ -5,7 +5,12 @@ import Task from "../Task/Task";
 
 import { fetchTasks } from "../../store/reducers/ActionCreator";
 
-const TaskList = () => {
+/**
+ * @param {Object} props 
+ * @param {File[]} props.files
+ * @param {Function} props.setFiles
+ */
+const TaskList = ({ files, setFiles }) => {
   const dispatch = useDispatch();
   const { tasks } = useSelector(state => state.taskReducer);
 
@@ -15,7 +20,7 @@ const TaskList = () => {
 
   return (
     <ul className="list">
-      { tasks.map(task => <Task key={task.id} task={task} />) }
+      { tasks.map(task => <Task key={task.id} task={task} files={files} setFiles={setFiles} />) }
     </ul>
   );
 };

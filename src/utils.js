@@ -14,3 +14,18 @@ export const getRandomId = () => {
 
   return result;  
 };
+
+/**
+ * Generates File Object from url
+ * @param {String} url image url
+ * @returns {File} file object
+ */
+export const urlToObject = async url => {
+  const urlSplit = url.split("/");
+  const fileName = urlSplit[urlSplit.length - 1].split("?")[0];
+  const response = await fetch(url);
+  const blob = await response.blob();
+  const file = new File([blob], fileName, {type: blob.type});
+
+  return file;
+};

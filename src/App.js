@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useSelector } from "react-redux";
 
 import Container from "./components/Container/Container";
@@ -7,12 +8,13 @@ import TaskList from "./components/TaskList/TaskList";
 
 const App = () => {
   const { editTaskId } = useSelector(state => state.taskReducer);
+  const [files, setFiles] = useState([]);
 
   return (
     <Container>
       <Header />
-      { editTaskId === -1 ? <TaskForm /> : null}
-      <TaskList />
+      { editTaskId === -1 ? <TaskForm files={files} setFiles={setFiles} /> : null}
+      <TaskList files={files} setFiles={setFiles} />
     </Container>
   );
 };

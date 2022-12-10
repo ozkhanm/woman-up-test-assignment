@@ -2,20 +2,18 @@ import { useSelector } from "react-redux";
 import dayjs from "dayjs";
 
 /**
- * 
  * @param {Object} props
  * @param {String} props.attachment
  */
 const AttachmentItem = ({ attachment }) => {
   return (
-    <li>
-      { attachment }
+    <li className="attachment-item">
+      <img className="attachment-item__image" src={attachment} alt="Attachment" />
     </li>
   );
 };
 
 /**
- * 
  * @param {Object} props 
  * @param {String} props.id
  * @param {String} props.description

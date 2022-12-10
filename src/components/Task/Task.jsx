@@ -5,7 +5,6 @@ import AdditionalInfoBlock from "../AdditionalInfoBlock/AdditionalInfoBlock";
 import TaskForm from "../TaskForm/TaskForm";
 
 /**
- * 
  * @param {Object} props 
  * @param {{
  *  id: String
@@ -15,8 +14,10 @@ import TaskForm from "../TaskForm/TaskForm";
  *  attachments: Array<String>
  *  isFinished: Boolean
  * }} props.task
+ * @param {File[]} props.files
+ * @param {Function} props.setFiles
  */
-const Task = ({ task }) => {
+const Task = ({ task, files, setFiles }) => {
   const { editTaskId } = useSelector(state => state.taskReducer);
   const listItemEditClassname = editTaskId === task.id ? "list__item--edit" : "";
 
@@ -25,11 +26,11 @@ const Task = ({ task }) => {
       {
         editTaskId !== task.id ?
         <>
-          <MainInfoBlock task={task} />
+          <MainInfoBlock task={task} setFiles={setFiles} />
           <AdditionalInfoBlock task={task} />
         </>
         :
-        <TaskForm task={task} />
+        <TaskForm task={task} files={files} setFiles={setFiles} />
       }
     </li>
   );

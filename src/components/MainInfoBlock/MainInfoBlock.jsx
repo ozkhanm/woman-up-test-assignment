@@ -6,7 +6,6 @@ import TaskControls from "../TaskControls/TaskControls";
 import { changeIsFinishedTaskStatus } from "../../store/reducers/ActionCreator";
 
 /**
- * 
  * @param {Object} props 
  * @param {String} props.id
  * @param {String} props.title
@@ -14,8 +13,9 @@ import { changeIsFinishedTaskStatus } from "../../store/reducers/ActionCreator";
  * @param {Number} props.endDate
  * @param {Array<String>} props.attachments
  * @param {Boolean} props.isFinished
+ * @param {Function} props.setFiles
  */
-const MainInfoBlock = ({task: { id, title, description, endDate, attachments, isFinished }}) => {
+const MainInfoBlock = ({task: { id, title, description, endDate, attachments, isFinished }, setFiles}) => {
   const dispatch = useDispatch();
   const checkboxRef = useRef();
 
@@ -49,7 +49,7 @@ const MainInfoBlock = ({task: { id, title, description, endDate, attachments, is
       >
         { title }
       </label>
-      <TaskControls taskId={id} />
+      <TaskControls taskId={id} setFiles={setFiles} />
     </div>
   );
 };

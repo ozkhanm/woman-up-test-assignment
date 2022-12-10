@@ -1,5 +1,4 @@
 /**
- * 
  * @param {Object} props
  * @param {Array<React.Element>} props.children
  */

@@ -11,64 +11,85 @@ import { processAddNewTask } from "../../store/reducers/ActionCreator";
 import { taskSlice } from "../../store/reducers/TaskSlice";
 import { TASK_FIELDS } from "../../constants";
 import { storage } from "../../firebase-config";
-import { getRandomId } from "../../utils";
+import { getRandomId, urlToObject } from "../../utils";
 
 /**
- * @typedef {{
- * title: String
- * description: String
- * endDate: Number
- * attachments: Array<String>
- * isFinished: Boolean
- * }} Task
- */
-
-/**
- * 
  * @param {Object} props 
- * @param {String} props.title
- * @param {String} props.id
- * @param {String} props.description
- * @param {Number} props.endDate
- * @param {Array<String>} props.attachments
- * @param {Boolean} props.isFinished
+ * @param {File[]} props.files
+ * @param {Function} props.setFiles
  */
-const TaskForm = () => {
+const TaskForm = ({ files, setFiles }) => {
   const dispatch = useDispatch();
   const { newTask, editingTask, editTaskId } = useSelector(state => state.taskReducer);
   const { editExistingTask, setEditTaskId, changeNewTask, changeExistingTask, clearExistingTask } = taskSlice.actions;
 
-  const [taskData, setTaskData] = useState(() => {
-    return editTaskId !== -1 ? editingTask : newTask;
-  });
+  const [taskData, setTaskData] = useState(() => editTaskId !== -1 ? editingTask : newTask);
+  const [localUrls, setLocalUrls] = useState(() => editTaskId === -1 ? taskData.attachments.map(it => it.url) : taskData.attachments);
 
-  const [localUrls, setLocalUrls] = useState(() => {
-    return taskData.attachments.map(it => it.url);
-  });
-
-  /**
-   * @param {SubmitEvent} e 
-   */
   const formSubmitButtonClickHandler = e => {
     e.preventDefault();
 
-    if (editTaskId === -1) {
-      dispatch(processAddNewTask(taskData));
-      setTaskData({
-        title: "",
-        description: "",
-        endDate: Date.now(),
-        attachments: [],
-        isFinished: false,
+    const taskDataSlice = { ...taskData };
+    const urlsPromises = [];
+    const data = editTaskId === -1 ? taskData.attachments : files;
+    const refs = [];
+
+    if (editTaskId !== -1) {
+      Array.from(data).forEach(it => {
+        refs.push({
+          ref: ref(storage, `${it.name}-${getRandomId()}`),
+          upload: it,
+          url: URL.createObjectURL(it),
+        });
       });
-    } else {
-      updateTask(editTaskId, taskData);
-      dispatch(editExistingTask({ id: editTaskId, taskData }));
-      dispatch(setEditTaskId(-1));
-      dispatch(clearExistingTask());
     }
+
+    const editRefs = editTaskId === - 1 ? taskData.attachments : refs;
+
+    for (let i = 0; i < editRefs.length; i++) {
+      urlsPromises.push(uploadBytes(editRefs[i].ref, editRefs[i].upload));
+    }
+
+    Promise.all(urlsPromises)
+      .then(data => {
+        const links = [];
+
+        for (let i = 0; i < data.length; i++) {
+          links.push(getDownloadURL(data[i].ref));
+        }
+
+        Promise.all(links)
+          .then(data => {
+            taskDataSlice.attachments = data;
+          })
+          .then(() => {
+            if (editTaskId === -1) {
+              dispatch(processAddNewTask(taskDataSlice));
+              setTaskData({
+                title: "",
+                description: "",
+                endDate: Date.now(),
+                attachments: [],
+                isFinished: false,
+              });
+            } else {
+              updateTask(editTaskId, taskDataSlice);
+              dispatch(editExistingTask({ id: editTaskId, taskData: taskDataSlice }));
+              dispatch(setEditTaskId(-1));
+              dispatch(clearExistingTask());
+            }
+
+            setLocalUrls([]);
+          });
+      });
   };
 
+  /**
+   * Input handlers controller
+   * @param {Function} action store action
+   * @param {String} field field type
+   * @param {String | File[]} value input value
+   */
   const inputChangeController = (action, field, value) => {
     switch (field) {
       case TASK_FIELDS.END_DATE:
@@ -82,8 +103,9 @@ const TaskForm = () => {
 
       case TASK_FIELDS.ATTACHMENTS:
         const attachmentRefs = [];
+        const data = editTaskId === -1 ? value : files;
         
-        Array.from(value).forEach(it => {
+        Array.from(data).forEach(it => {
           attachmentRefs.push({
             ref: ref(storage, `${it.name}-${getRandomId()}`),
             upload: it,
@@ -121,6 +143,7 @@ const TaskForm = () => {
       const localUrls = Array.from(value).map(it => URL.createObjectURL(it));
 
       setLocalUrls(localUrls);
+      setFiles(value);
     }
 
     if (editTaskId === -1) {
@@ -131,29 +154,59 @@ const TaskForm = () => {
   };
 
   const removeImageButtonClickHandler = id => {
-    Promise.resolve()
-      .then(() => {
-        setLocalUrls(prevState => {
-          const oldUrls = prevState.slice();
-    
-          oldUrls.splice(id, 1);
+    if (editTaskId !== -1) {
+      Promise.resolve()
+        .then(() => {
+          const data = { ...taskData };
+          const attachments = [...data.attachments];
+          const result = [];
+
+          attachments.splice(id, 1);
+          attachments.forEach(it => {
+            result.push(urlToObject(it));
+          });
+
+          Promise.all(result)
+            .then(data => {
+              setFiles(data);
+            })
+            .then(() => {
+              setLocalUrls(prevState => {
+                const oldUrls = prevState.slice();
           
-          return oldUrls;
+                oldUrls.splice(id, 1);
+                
+                return oldUrls;
+              });
+            });
+          });
+    } else {
+      Promise.resolve()
+        .then(() => {
+          setLocalUrls(prevState => {
+            const oldUrls = prevState.slice();
+      
+            oldUrls.splice(id, 1);
+            
+            return oldUrls;
+          });
+        })
+        .then(() => {
+          const data = { ...taskData };
+          const attachments = [...data.attachments];
+
+          attachments.splice(id, 1);
+          data.attachments = attachments;
+          setTaskData(data);
+
+          return data;
+        })
+        .then(data => {
+          const attachments = editTaskId === -1 ? data.attachments.map(it => it.upload) : [...data.attachments];
+
+          inputChangeController(changeExistingTask, TASK_FIELDS.ATTACHMENTS, attachments);
         });
-      })
-      .then(() => {
-        const data = { ...taskData };
-
-        data.attachments.splice(id, 1);
-        setTaskData(data);
-
-        return data;
-      })
-      .then(data => {
-        const attachments = data.attachments.map(it => it.upload);
-
-        inputChangeController(changeExistingTask, TASK_FIELDS.ATTACHMENTS, attachments);
-      });
+    }
   };
 
   return (
@@ -162,6 +215,7 @@ const TaskForm = () => {
       <AdditionalInputBlock
         taskData={taskData}
         localUrls={localUrls}
+        files={files}
         inputChangeHandler={inputChangeHandler}
         removeImageButtonClickHandler={removeImageButtonClickHandler}
       />
