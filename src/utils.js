@@ -21,11 +21,22 @@ export const getRandomId = () => {
  * @returns {File} file object
  */
 export const urlToObject = async url => {
-  const urlSplit = url.split("/");
-  const fileName = urlSplit[urlSplit.length - 1].split("?")[0];
+  const fileName = urlToFilename(url);
   const response = await fetch(url);
   const blob = await response.blob();
   const file = new File([blob], fileName, {type: blob.type});
 
   return file;
+};
+
+/**
+ * Gets file name from url
+ * @param {String} url 
+ * @returns {String}
+ */
+export const urlToFilename = url => {
+  const urlSplit = url.split("/");
+  const fileName = urlSplit[urlSplit.length - 1].split("?")[0];
+
+  return fileName;
 };

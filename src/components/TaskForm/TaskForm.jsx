@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 import dayjs from "dayjs";
 
 import AdditionalInputBlock from "../AdditionalInputBlock/AdditionalInputBlock";
@@ -11,7 +11,7 @@ import { processAddNewTask } from "../../store/reducers/ActionCreator";
 import { taskSlice } from "../../store/reducers/TaskSlice";
 import { TASK_FIELDS } from "../../constants";
 import { storage } from "../../firebase-config";
-import { getRandomId, urlToObject } from "../../utils";
+import { getRandomId, urlToObject, urlToFilename } from "../../utils";
 
 /**
  * @param {Object} props 
@@ -29,8 +29,26 @@ const TaskForm = ({ files, setFiles }) => {
 
   const formSubmitButtonClickHandler = e => {
     e.preventDefault();
-
     setIsDataFetching(true);
+
+    const existingTaskIds = [];
+
+    if (editTaskId !== -1) {
+      const attachments = [...taskData.attachments];
+
+      for (let i = 0; i < attachments.length; i++) {
+        const fileName = urlToFilename(attachments[i]);
+        const id = Array.from(files).findIndex(it => it.name === fileName);
+
+        if (id === -1) {
+          const deleteRef = ref(storage, fileName.replaceAll("%20", " "));
+
+          deleteObject(deleteRef);
+        } else {
+          existingTaskIds.push(id);
+        }
+      }
+    }
 
     const taskDataSlice = { ...taskData };
     const urlsPromises = [];
@@ -38,12 +56,20 @@ const TaskForm = ({ files, setFiles }) => {
     const refs = [];
 
     if (editTaskId !== -1) {
-      Array.from(data).forEach(it => {
-        refs.push({
-          ref: ref(storage, `${it.name}-${getRandomId()}`),
-          upload: it,
-          url: URL.createObjectURL(it),
-        });
+      Array.from(data).forEach((it, index) => {
+        if (existingTaskIds.includes(index)) {
+          refs.push({
+            ref: ref(storage, files[index].name),
+            upload: files[index],
+            url: URL.createObjectURL(files[index]),
+          });
+        } else {
+          refs.push({
+            ref: ref(storage, `${it.name}-${getRandomId()}`),
+            upload: it,
+            url: URL.createObjectURL(it),
+          });
+        }
       });
     }
 
